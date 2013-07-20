@@ -19,6 +19,11 @@ defmodule Import.Riak do
 	@doc """
 	receive transmissions with message body as a tuple of
 	`{_stat, pid, bucket, key, json, six}`
+	where pid is a process created with init
+	where bucket and key are the path to the record
+	where json is the record body
+	where six is the specially crafted 2i representation 
+	used with :riakc_pb_socket.set_secondary_index(six)
 
 	Return a tuple of `{ status, msg }` to the sender. 
 	"""

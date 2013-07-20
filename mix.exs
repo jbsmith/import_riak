@@ -18,7 +18,7 @@ defmodule Import.Mixfile do
   defp deps do
     [ 
       { :jsonex, "2.0", [github: "marcelog/jsonex", tag: "2.0"]},
-      { :riakc,"1.4.0", [github: "basho/riak-erlang-client"]},
+      { :riakc,"1.4.0", [github: "basho/riak-erlang-client"]}, # an erlang library
       { :ex_doc, [github: "elixir-lang/ex_doc"] }
     ]
   end
