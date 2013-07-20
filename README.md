@@ -39,6 +39,13 @@ This is a project built with Elixir
 	./import PATH_TO_DATA/data.csv 0 100000000 256
 	./import PATH_TO_DATA/data.csv 4 30 1
 
+
+### Prepare the documentation RECOMMENDED ###
+	this will generate the docs into /docs path
+	
+	mix docs
+	
+
 =======
 
 
