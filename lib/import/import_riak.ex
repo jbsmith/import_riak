@@ -19,7 +19,7 @@ defmodule Import.Riak do
 	@doc """
 	receive transmissions with message body as a tuple of
 	`{_stat, pid, bucket, key, json, six}`
-	
+
 	Return a tuple of `{ status, msg }` to the sender. 
 	"""
 	def post do
