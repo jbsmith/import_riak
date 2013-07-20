@@ -6,8 +6,8 @@ Utility to enable import of data into Riak using Elixir based application module
 ## [Import](https://github.com/jbsmith/import_riak/blob/master/lib/import.ex)
 ## [Import.Cli](https://github.com/jbsmith/import_riak/blob/master/lib/import/import_cli.ex)
 ## [Import.Riak](https://github.com/jbsmith/import_riak/blob/master/lib/import/import_riak.ex)
-## [Import.Riak.Csv](https://github.com/jbsmith/import_riak/blob/master/lib/import/riak/import_riak_csb.ex)
-## [Import.Riak.Csv.Ipgeo](https://github.com/jbsmith/import_riak/blob/master/lib/import/riak.csv.import_riak_csv_ipgeo.ex)
+## [Import.Riak.Csv](https://github.com/jbsmith/import_riak/blob/master/lib/import/riak/import_riak_csv.ex)
+## [Import.Riak.Csv.Ipgeo](https://github.com/jbsmith/import_riak/blob/master/lib/import/riak/csv/import_riak_csv_ipgeo.ex)
 
 
 This is a project built with Elixir
@@ -15,6 +15,10 @@ This is a project built with Elixir
 ### Prepate the ENV vars using export ###
 
 export ELIXIR_ERL_OPTS='+S 2 +P 134217727'
+
+### Prepare the dependencies ###
+	
+	mix deps.get
 
 ### Prepare the command line binary ###
 
@@ -24,6 +28,7 @@ export ELIXIR_ERL_OPTS='+S 2 +P 134217727'
 
 	mix compile
 	iex -S mix
+	>
 
 
 ### Examples of command line usage ith the compiled binary 'import' ###
