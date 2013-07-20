@@ -15,7 +15,7 @@ This is a project built with Elixir
 ## Prerequisites ##
 ### Install Elixir and Erlang ###
 
-	[Elixir Installation](http://elixir-lang.org/getting_started/1.html)
+## [Elixir Installation](http://elixir-lang.org/getting_started/1.html)
 
 ### Prepare the ENV vars using export RECOMMENDED ###
 
