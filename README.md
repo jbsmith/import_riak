@@ -7,7 +7,7 @@ Utility to enable import of data into Riak using Elixir based application module
 ## [Import.Cli](https://github.com/jbsmith/import_riak/blob/master/lib/import/import_cli.ex)
 ## [Import.Riak](https://github.com/jbsmith/import_riak/blob/master/lib/import/import_riak.ex)
 ## [Import.Riak.Csv](https://github.com/jbsmith/import_riak/blob/master/lib/import/riak/import_riak_csv.ex)
-## [Import.Riak.Csv.Ipgeo](https://github.com/jbsmith/import_riak/blob/master/lib/import/riak/csv/import_riak_csv_ipgeo.ex)
+## [Import.Riak.Csv.Ipgeo](https://github.com/jbsmith/import_riak/blob/master/lib/import/riak/csv/import_riak_csv_ipgeoParser.ex)
 
 
 This is a project built with Elixir
