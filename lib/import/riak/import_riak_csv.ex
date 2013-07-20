@@ -20,7 +20,7 @@ defmodule Import.Riak.Csv do
 		System.halt(0)
 	end
 
-    defp processlines(file, parser, rpid, start_index // 0, qty // 100000000, rate // 0) do
+        defp processlines(file, parser, rpid, start_index // 0, qty // 100000000, rate // 0) do
 		IO.puts "\n#{inspect(self)} Seeking line #{start_index} ..."
 	    IO.stream(file)
 	    |> Stream.drop(start_index)
@@ -40,12 +40,12 @@ defmodule Import.Riak.Csv do
 	    	 end
 	       )
 	    |> Enum.take(qty)
-    end
+        end
 
-    defp ratelimit(count, pause) do
-    	if(rem(count,10) == 0 && count>0) do 
-			# pausing briefly 
+        defp ratelimit(count, pause) do
+    	    if(rem(count,10) == 0 && count>0) do 
+	        # pausing briefly 
 	    	:timer.sleep(pause)
-		end
-    end
+	    end
+        end
 end
