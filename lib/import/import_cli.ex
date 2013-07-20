@@ -2,7 +2,7 @@ defmodule Import.Cli do
 
 	@default_start 0
 	@default_qty   100000000
-	@default_rate  0 # higher is slower, measured in milliseconds of pause per 10 lines parsed
+	@default_rate  0         
 	@type start :: integer
 	@type qty :: integer
 	@type rate :: integer
@@ -21,10 +21,7 @@ defmodule Import.Cli do
 
 	@doc """
 	`argv` can be -h or --help, which returns :help.
-
-	Otherwise it is a github user name, project name, and (optionally)
-	the number of entries to format.
-
+	
 	Return a tuple of `{ file, start, qty, rate }`, or `:help` if help was given. 
 	"""
 
@@ -53,16 +50,17 @@ defmodule Import.Cli do
 		
 		e.g.
 
-		mix run -e 'Import.run(["../NOTES/data.csv",0,100,1000])'
+		mix run -e 'Import.run(["PATH_TO_DATA/data.csv",0,100,1000])'
 
 		OR
 
-		./import ../NOTES/data.csv 0 100 0
+		./import PATH_TO_DATA/data.csv 0 100 0
 
 		where file is a local file path
 		where start is the line number to start processing on
 		where qty is the number of lines to process
-		where rate is the sleep time in ms applied to every 10 line set
+		where rate is the sleep time in ms applied to every 10 line set 
+		increase the rate from 0 to slow the processing of lines and reduce load
 		"""
 
 		System.halt(0)

@@ -2,6 +2,7 @@
 mix.lock
 erl_crash.dump
 *.beam
+/docs
 /deps
 /ebin
 .DS_Store

@@ -5,8 +5,38 @@
 
 This is a project built with Elixir
 
-** TODO: Add description **
+## Prepate the ENV vars using export ##
 
-ELIXIR_ERL_OPTS='+S 2 +P 134217727'
-iex -S mix
-> Import.Riak.Csv.Ipgeo.file("../NOTES/data.csv",900000,100000)
+export ELIXIR_ERL_OPTS='+S 2 +P 134217727'
+
+## Prepare the command line binary ##
+
+	mix escriptize
+
+## Just compile the modules for use with iex ##
+
+	mix compile
+	iex -S mix
+
+
+Examples of command line usage ith the compiled binary 'import'
+
+./import PATH_TO_DATA/data.csv 0 10 20
+
+./import PATH_TO_DATA/data.csv 1000 1000 0		# import the file starting at line 1000 for 1000 lines as fast as possible (0)
+
+./import PATH_TO_DATA/data.csv                  # just import the whole file as fast as possible
+
+./import PATH_TO_DATA/data.csv 0 100000000 256
+
+./import PATH_TO_DATA/data.csv 4 30 1
+
+## (The MIT License) ##
+
+Copyright (c) 2013 JB Smith
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
