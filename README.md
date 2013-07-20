@@ -1,3 +1,8 @@
+import_riak
+===========
+
+Utility to enable import of data into Riak using Elixir based application modules
+
 # Import
 # Import.Riak
 # Import.Riak.Csv
@@ -31,4 +36,7 @@ Examples of command line usage ith the compiled binary 'import'
 ./import PATH_TO_DATA/data.csv 0 100000000 256
 
 ./import PATH_TO_DATA/data.csv 4 30 1
+
+=======
+
 
