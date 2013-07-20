@@ -3,39 +3,40 @@ import_riak
 
 Utility to enable import of data into Riak using Elixir based application modules
 
-# Import
-# Import.Riak
-# Import.Riak.Csv
-# Import.Riak.Csv.Ipgeo
+## [Import](https://github.com/jbsmith/import_riak/blob/master/lib/import.ex)
+## [Import.Cli](https://github.com/jbsmith/import_riak/blob/master/lib/import/import_cli.ex)
+## [Import.Riak](https://github.com/jbsmith/import_riak/blob/master/lib/import/import_riak.ex)
+## [Import.Riak.Csv](https://github.com/jbsmith/import_riak/blob/master/lib/import/riak/import_riak_csb.ex)
+## [Import.Riak.Csv.Ipgeo](https://github.com/jbsmith/import_riak/blob/master/lib/import/riak.csv.import_riak_csv_ipgeo.ex)
 
 
 This is a project built with Elixir
 
-## Prepate the ENV vars using export ##
+### Prepate the ENV vars using export ###
 
 export ELIXIR_ERL_OPTS='+S 2 +P 134217727'
 
-## Prepare the command line binary ##
+### Prepare the command line binary ###
 
 	mix escriptize
 
-## Just compile the modules for use with iex ##
+### Just compile the modules for use with iex ###
 
 	mix compile
 	iex -S mix
 
 
-Examples of command line usage ith the compiled binary 'import'
+### Examples of command line usage ith the compiled binary 'import' ###
 
-./import PATH_TO_DATA/data.csv 0 10 20
+	./import PATH_TO_DATA/data.csv 0 10 20
 
-./import PATH_TO_DATA/data.csv 1000 1000 0		# import the file starting at line 1000 for 1000 lines as fast as possible (0)
+	./import PATH_TO_DATA/data.csv 1000 1000 0		# import the file starting at line 1000 for 1000 lines as fast as possible (0)
 
-./import PATH_TO_DATA/data.csv                  # just import the whole file as fast as possible
+	./import PATH_TO_DATA/data.csv                  # just import the whole file as fast as possible
 
-./import PATH_TO_DATA/data.csv 0 100000000 256
+	./import PATH_TO_DATA/data.csv 0 100000000 256
 
-./import PATH_TO_DATA/data.csv 4 30 1
+	./import PATH_TO_DATA/data.csv 4 30 1
 
 =======
 
