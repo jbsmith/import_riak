@@ -100,9 +100,7 @@ defmodule Import.Riak.Csv.Ipgeo_parser do
             {:ok, pid, bucket, net, json, six}
         end
 
-        @doc """
-                utility functions for floor/1
-        """
+
         defp floor(x) when x < 0 do
             t = trunc(x)
             case (x - t) == 0 do
@@ -116,9 +114,6 @@ defmodule Import.Riak.Csv.Ipgeo_parser do
         end
 
 
-        doc """
-                utility functions for ceiling/1
-        """
         defp ceiling(x) when x < 0 do
                 trunc(x)
         end

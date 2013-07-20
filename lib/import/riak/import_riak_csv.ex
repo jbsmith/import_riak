@@ -13,7 +13,7 @@ defmodule Import.Riak.Csv do
 	    
 	    IO.write "\n#{inspect(self)} Seeking started at #{inspect(:erlang.localtime())}"
 	    
-	    File.open(filename,[:read], 
+	    File.open(filename,[:read,:read_ahead], 
 	        fn(file) ->
 		    processlines(file, parser, riak_pid, start_index, qty, rate) 
 	        end
