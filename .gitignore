@@ -1,0 +1,10 @@
+./import
+mix.lock
+erl_crash.dump
+*.beam
+/docs
+/deps
+/ebin
+.DS_Store
+._.DS_Store
+./test
