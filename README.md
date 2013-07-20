@@ -12,6 +12,11 @@ Utility to enable import of data into Riak using Elixir based application module
 
 This is a project built with Elixir
 
+## Prerequisites ##
+### Install Elixir and Erlang ###
+
+	[Elixir Installation](http://elixir-lang.org/getting_started/1.html)
+
 ### Prepare the ENV vars using export RECOMMENDED ###
 
 	export ELIXIR_ERL_OPTS='+S 2 +P 134217727'
