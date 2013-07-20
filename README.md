@@ -15,7 +15,11 @@ This is a project built with Elixir
 ## Prerequisites ##
 ### Install Elixir and Erlang ###
 
-## [Elixir Installation](http://elixir-lang.org/getting_started/1.html)
+### [Elixir Installation](http://elixir-lang.org/getting_started/1.html)
+
+### Clone this repo from github ###
+
+### [import_riak](https://github.com/jbsmith/import_riak.git)
 
 ### Prepare the ENV vars using export RECOMMENDED ###
 
