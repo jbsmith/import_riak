@@ -42,11 +42,11 @@ This is a project built with Elixir
 
 ### Examples of command line usage with the compiled binary 'import' from 'mix escriptize' ###
 
-	./import PATH_TO_DATA/data.csv 0 10 20
-	./import PATH_TO_DATA/data.csv 1000 1000 0		# import the file starting at line 1000 for 1000 lines as fast as possible (0)
-	./import PATH_TO_DATA/data.csv                  # just import the whole file as fast as possible
-	./import PATH_TO_DATA/data.csv 0 100000000 256
-	./import PATH_TO_DATA/data.csv 4 30 1
+	./import PATH_TO_DATA/data.csv 127.0.0.1:8097 4 0 10 20
+	./import PATH_TO_DATA/data.csv 127.0.0.1:8097 10 1000 1000 0		# import the file with 10 pocesses starting at line 1000 for 1000 lines as fast as possible (0)
+	./import PATH_TO_DATA/data.csv                  # just import the whole file as fast as possible defaults to using 4 processes to riak at 127.0.0.1:8097
+	./import PATH_TO_DATA/data.csv 127.0.0.1:8097 20 0 100000000 256
+	./import PATH_TO_DATA/data.csv 127.0.0.1:8097 1 4 30 1
 
 
 ### Prepare the documentation RECOMMENDED ###
