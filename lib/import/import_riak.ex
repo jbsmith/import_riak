@@ -8,10 +8,12 @@ defmodule Import.Riak do
 
 	@doc """
 	return a new riak pid as a riakc_pb_socket
+	options can accept the host and port as a tuple
 	"""
-	def link() do
+	def link(options) do
+		{host, port} = options
 		socket_opts = [{:"connect_timeout",1000000},{:"queue_if_disconnected",true},{:"auto_reconnect",true}]
-		case :riakc_pb_socket.start_link(:"127.0.0.1", 8097,socket_opts) do
+		case :riakc_pb_socket.start_link(binary_to_atom(host), binary_to_integer(port), socket_opts) do
 			{:ok, link_pid} ->
 				{:ok, link_pid}
 			{_, reason } ->

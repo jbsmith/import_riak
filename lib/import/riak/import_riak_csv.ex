@@ -1,90 +1,124 @@
 defmodule Import.Riak.Csv do
-	
-	_old_priority = :erlang.process_flag(:priority,:low)
-	#_old_trapexit = :erlang.process_flag(:trap_exit,:true)
+    
+    _old_priority = :erlang.process_flag(:priority,:low)
+    #_old_trapexit = :erlang.process_flag(:trap_exit,:true)
 
-	@headers [ "User-agent": "Import.Riak.CSV", "Content-Type": "application/json"]
-	@max_lines 100000000
+    @headers [ "User-agent": "Import.Riak.CSV", "Content-Type": "application/json"]
+    @max_lines 100000000
+    @cursor_home "\033[50;1H"
+    @cursor_erase "\033[2K"
+
+    defp csl(options,contents) do
+        "#{@cursor_home}\033[#{HashDict.get(options,:procs)+1}S#{contents}#{@cursor_home}"
+    end
+
+    defp cil(options,contents) do
+        line_number = (HashDict.get(options,:procs)-HashDict.get(options,:midx)) + 1
+        "#{@cursor_home}\033[#{line_number}F#{@cursor_erase}#{contents}"
+    end
 
     def file(options) do
         IO.write "\nMuxing"
-        parent = Process.self()
-        { filename, procs, parser, start_index, qty, rate } = options
-
-        0..(procs-1)
+        message = "#{inspect(self)} began processing of records at #{inspect(:erlang.localtime())}\n"
+        IO.write "#{csl(options,message)}"
+        0..(HashDict.get(options,:procs)-1)
          |> Enum.map( fn (cidx) ->
-                mult = Import.Utils.Math.floor(qty / procs)
-                start_index = start_index + (mult * cidx) + 1
-                :timer.sleep( Import.Utils.Math.floor(start_index/100) )
-                spawn_link(Import.Riak.Csv, :processlines, []) <- { self, { filename, procs, parser, start_index, mult, rate , cidx} }
+                spawn_link(Import.Riak.Csv, :processlines, []) <- { self, options |> mux_options(cidx) }
             end)
-         |> Enum.map( fn (pid) ->
+         |> Enum.map( fn ({pid,_options}) ->
                 receive do 
-                    { ^pid, result } ->
-                        result
-                        #=IO.write "\mDone" 
-                        #Process.exit(pid,"done")
+                    { ^pid, msg } ->
+                        IO.write msg
                 end
             end
             )
-         |> 
-         IO.write "\n#{inspect(self)} Completed at #{inspect(:erlang.localtime())}"
-         System.halt(0)
+         IO.write "\n\033[50;1HCompleted all processing\n#{@cursor_home}"
     end
 
+    defp announce(options,idx) when idx == 0 do
+        IO.write "\n\033[50;1H\033[2F\033[2K\033[0GImporting started at #{inspect(:erlang.localtime())} for lines #{HashDict.get(options,:start)} through #{HashDict.get(options,:start) + HashDict.get(options,:qty)}#{@cursor_home}" 
+        options
+    end
+
+    defp announce(options,_) do
+        options
+    end
+
+    defp update(options,idx,iend,result) when idx !== iend  do
+        message = "#{inspect(self)} \033[20Gkey:#{result} \033[42G@line:#{HashDict.get(options,:start) + idx} \033[60Gprocessed"
+        IO.write "#{cil(options,message)}" 
+        options
+    end 
+
     def processlines() do
-        _old_priority = :erlang.process_flag(:priority,:low)
+        #_old_priority = :erlang.process_flag(:priority,:low)
         receive do
             {sender, options}  -> 
-                me = self
-                {filename, procs, parser, start_index, qty, rate, cidx} = options
-                if(qty > @max_lines) do qty = @max_lines end
-                if(start_index <=0) do start_index = 1 end
-                outline = (procs-cidx) + 1
-                IO.write "\033[50;1H\033[1F\033[2K\033[0G#{inspect(self)} \033[20GSeeking line #{start_index} ..."
-                {:ok, rpid} = Import.Riak.link()
-                File.open(filename,[:read,{:read_ahead,4096000}],
+                {:ok, rpid} = Import.Riak.link(parse_hostport(options))
+                message = "#{inspect(self)} \033[20GSeeking line #{HashDict.get(options,:start)} ..."
+                IO.write "#{cil(options,message)}"
+                File.open(HashDict.get(options,:file),[:read,{:read_ahead,4096000}],
                     fn(file) ->
                         file
                         |> IO.stream()
-                        |> Stream.drop(start_index)
+                        |> Stream.drop(HashDict.get(options,:start))
                         |> Stream.with_index()
                         |> Stream.map(
                                 fn({line,idx}) ->
-                                    
-                                    pclose({self,qty-idx})
-                                    ratelimit(idx, rate)
-                                    spawn(Import.Riak, :post, []) <- {self, parser.parse(rpid, :"ipgeo", line)}
-                                    #if(rem(idx,100) == 0) do IO.write "." end
+                                    ratelimit(options,idx)
+                                    spawn(Import.Riak, :post, []) <- {self, HashDict.get(options,:parser).parse(rpid, :"ipgeo", line)}
                                     receive do
                                         {_,msg} ->
-                                            if(idx==0) do IO.write "\n\033[50;1H\033[2F\033[2K\033[0GImporting started at #{inspect(:erlang.localtime())} for lines #{start_index} through #{start_index + qty}" end
-                                            IO.write "\033[50;1H\033[#{outline}F\033[2K\033[0G#{inspect(self)} \033[20Gkey:#{msg} \033[42G@line:#{start_index + idx} \033[60Gprocessed"                   
+                                            options
+                                            |> announce(idx)
+                                            |> update(idx,HashDict.get(options,:qty),msg)  
                                     end
                                  end
                            )
-                        |> Enum.take(qty)
-                        |> File.close()
-                        IO.write "\nDone"
+                        |> Enum.take(HashDict.get(options,:qty))
+                        File.close(file)
                     end
                 )
-            
+                message = "#{inspect(self)} completed processing of records at #{inspect(:erlang.localtime())}\n"
+                sender <- {sender,"#{cil(options,message)}"}
         end
     end
 
-    defp ratelimit(count, pause) do
-	    if(rem(count,10) == 0 && count>0) do 
-        # pausing briefly 
-        :timer.sleep(pause)
+    defp ratelimit(options, count) do
+        if(rem(count,10) == 0 && count>0) do 
+        :timer.sleep(HashDict.get(options,:rate))
         end
     end
 
-    defp pclose({pid,0}) do
-        Process.exit(pid,"done")
+    defp regex_piped_split(string,pattern) do
+        Regex.split(pattern,string)
     end
 
-    defp pclose({pid,_}) do
-        false
+    defp parse_hostport(options) do
+        options
+        |> HashDict.get(:host)
+        |> regex_piped_split(%r/\:/)
+        |> list_to_tuple 
     end
+
+    defp is_under(x,floor) when x > floor do
+        x
+    end
+
+    defp is_under(_,floor) do
+        floor
+    end
+
+    defp start_at(x) do
+        is_under(x,1)
+    end
+
+    defp mux_options(options, midx) do
+        mult = Import.Utils.Math.floor( HashDict.get(options,:qty) / HashDict.get(options,:procs) )
+        options 
+            |> HashDict.put(:start, start_at(HashDict.get(options, :start) + ( mult * midx) + 1 ) )
+            |> HashDict.put(:qty, mult)
+            |> HashDict.put_new(:midx, midx)
+    end   
 
 end

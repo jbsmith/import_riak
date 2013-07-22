@@ -1,5 +1,6 @@
 defmodule Import.Cli do 
 
+	@default_riak_host "127.0.0.1:8097"
 	@default_procs 4
 	@default_start 0
 	@default_qty   100000000
@@ -31,12 +32,13 @@ defmodule Import.Cli do
                                    		 aliases:  [ h:    :help   ])
 		case parse do
 			{ [ help: true ], _ } 					 -> :help
-			{ _, [ file, procs, start, qty, rate ] } -> { file, binary_to_integer(procs), binary_to_integer(start), binary_to_integer(qty), binary_to_integer(rate)  }
-			{ _, [ file, procs, start, qty ] } 		 -> { file, binary_to_integer(procs), binary_to_integer(start), binary_to_integer(qty), @default_rate  }
-			{ _, [ file, procs, start ] } 			 -> { file, binary_to_integer(procs), binary_to_integer(start), @default_count, @default_rate}
-			{ _, [ file, procs ] } 					 -> { file, binary_to_integer(procs), @default_start, @default_count, @default_rate}
-			{ _, [ file] } 							 -> { file, @default_procs, @default_start, @default_count, @default_rate}
-			  _  									 -> :help
+			{ _, [ file, host, procs, start, qty, rate ] } -> {   file, host, 				binary_to_integer(procs), binary_to_integer(start), binary_to_integer(qty), binary_to_integer(rate)}
+			{ _, [ file, host, procs, start, qty ] } 		 -> { file, host, 				binary_to_integer(procs), binary_to_integer(start), binary_to_integer(qty), @default_rate}
+			{ _, [ file, host, procs, start ] } 			 -> { file, host, 				binary_to_integer(procs), binary_to_integer(start), @default_qty, 			@default_rate}
+			{ _, [ file, host, procs ] } 					 -> { file, host, 				binary_to_integer(procs), @default_start, 			@default_qty, 			@default_rate}
+			{ _, [ file, host ] } 							 -> { file, host, 				@default_procs, 		  @default_start, 			@default_qty, 			@default_rate}
+			{ _, [ file ] } 							 	 -> { file, @default_riak_host, @default_procs, 		  @default_start, 			@default_qty, 			@default_rate}
+			  _  									 		 -> :help
 		end
 	end 
 
@@ -48,29 +50,32 @@ defmodule Import.Cli do
 	def process(:help) do
 		IO.puts """
 
-		usage: import <file> [ start | #{@default_start} ] [ qty | #{@default_qty} ] [ rate | #{@default_rate} ] 
+		usage: import <file> [ host | #{@default_riak_host} ] [ procs | #{@default_procs} ] [ start | #{@default_start} ] [ qty | #{@default_qty} ] [ rate | #{@default_rate} ] 
 		
 		e.g.
 
-		mix run -e 'Import.run(["PATH_TO_DATA/data.csv",0,100,1000])'
+		mix run -e 'Import.Cli.run(["PATH_TO_DATA/data.csv","127.0.0.1:8097",4,0,100,1000])'
 
 		OR
 
-		./import PATH_TO_DATA/data.csv 4 0 100 0
+		./import PATH_TO_DATA/data.csv 127.0.0.1:8097 4 0 100 0
+
+		DO NOT USE NEGATIVE sign in front of numbers, as they will be interpreted incorrectly
 
 		@file is a local file path
-		@procs is the number of parallel processes to run
-		@start is the line number to start processing on
-		@qty is the number of lines to process
-		@rate is the sleep time in ms applied to every 10 line set 
+		@host is the host:port to connect with riak
+		@procs is the number of parallel processes to run 			*<unsigned int>
+		@start is the line number to start processing on  			*<unsigned int>
+		@qty is the number of lines to process            			*<unsigned int>
+		@rate is the sleep time in ms applied to every 10 line set  *<unsigned int>
 		increase the rate from 0 to slow the processing of lines and reduce load
 		"""
 
 		System.halt(0)
 	end
 
-	def process({file, procs, start, qty, rate}) do
-		Import.Riak.Csv.file({file, procs, Import.Riak.Csv.Ipgeo_parser, start, qty, rate})
+	def process({file, host, procs, start, qty, rate}) do
+		Import.Riak.Csv.file(HashDict.new([{:file,file}, {:host,host}, {:procs, procs}, {:parser, Import.Riak.Csv.Ipgeo_parser}, {:start, start}, {:qty, qty}, {:rate, rate}]))
 	end
 
 end

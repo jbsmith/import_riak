@@ -12,9 +12,8 @@ defmodule Import.Utils.Math do
         trunc(x)
     end
 
-
     def ceiling(x) when x < 0 do
-            trunc(x)
+        trunc(x)
     end
 
     def ceiling(x) do
