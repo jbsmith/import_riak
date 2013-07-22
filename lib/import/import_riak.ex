@@ -9,11 +9,15 @@ defmodule Import.Riak do
 	@doc """
 	return a new riak pid as a riakc_pb_socket
 	"""
-	def init() do
-		{:ok, link_pid} = :riakc_pb_socket.start_link(:"127.0.0.1", 8087)
-		socket_opts = [{:"connect_timeout",1000000000},{:"queue_if_disconnected",true},{:"auto_reconnect",true}]
-		:riakc_pb_socket.set_options(link_pid,socket_opts,:infinity)
-		{:ok, link_pid}
+	def link() do
+		socket_opts = [{:"connect_timeout",1000000},{:"queue_if_disconnected",true},{:"auto_reconnect",true}]
+		case :riakc_pb_socket.start_link(:"127.0.0.1", 8097,socket_opts) do
+			{:ok, link_pid} ->
+				{:ok, link_pid}
+			{_, reason } ->
+				{:error, reason}
+		end
+		
 	end
 
 	@doc """

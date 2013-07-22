@@ -72,7 +72,7 @@ defmodule Import.Riak.Csv.Ipgeo_parser do
                 0 ->
                     ip_shift = 0
                 _ ->
-                    ip_shift = ceiling(:math.log(broadcast - net) / :math.log(2))
+                    ip_shift = Import.Utils.Math.ceiling(:math.log(broadcast - net) / :math.log(2))
             end
 
 		
@@ -99,31 +99,4 @@ defmodule Import.Riak.Csv.Ipgeo_parser do
 
             {:ok, pid, bucket, net, json, six}
         end
-
-
-        defp floor(x) when x < 0 do
-            t = trunc(x)
-            case (x - t) == 0 do
-                true -> t
-                false -> t - 1
-            end
-        end
-
-        defp floor(x) do
-            trunc(x)
-        end
-
-
-        defp ceiling(x) when x < 0 do
-                trunc(x)
-        end
-
-        defp ceiling(x) do
-            t = trunc(x)
-            case (x - t) == 0 do
-                true -> t
-                false -> t + 1
-            end
-        end
-
 end
