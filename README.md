@@ -48,6 +48,11 @@ This is a project built with Elixir
 	./import PATH_TO_DATA/data.csv 127.0.0.1:8097 20 0 100000000 256
 	./import PATH_TO_DATA/data.csv 127.0.0.1:8097 1 4 30 1
 
+### HELP at the command line ###
+
+	./import 
+	
+
 
 ### Prepare the documentation RECOMMENDED ###
 	this will generate the docs into /docs path
