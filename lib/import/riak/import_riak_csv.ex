@@ -1,7 +1,10 @@
 defmodule Import.Riak.Csv do
-    
-    _old_priority = :erlang.process_flag(:priority,:low)
-    #_old_trapexit = :erlang.process_flag(:trap_exit,:true)
+
+    alias :erlang, as: Erl
+    alias :timer,  as: Timer
+
+    _old_priority = Erl.process_flag(:priority,:low)
+    #_old_trapexit = Erl.process_flag(:trap_exit,:true)
 
     @headers [ "User-agent": "Import.Riak.CSV", "Content-Type": "application/json"]
     @max_lines 100000000
@@ -86,7 +89,7 @@ defmodule Import.Riak.Csv do
 
     defp ratelimit(options, count) do
         if(rem(count,10) == 0 && count>0) do 
-        :timer.sleep(HashDict.get(options,:rate))
+        Timer.sleep(HashDict.get(options,:rate))
         end
     end
 

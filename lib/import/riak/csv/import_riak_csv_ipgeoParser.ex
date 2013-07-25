@@ -1,4 +1,8 @@
 defmodule Import.Riak.Csv.Ipgeo_parser do
+
+    alias :erlang, as: Erl
+    alias :math,   as: Math
+
     @moduledoc """
         Here we are parsing network ranges and calculating the size and shift of the netmasks
         When comparing an IP address to find what range it is in, you can compare 32 versions
@@ -72,13 +76,13 @@ defmodule Import.Riak.Csv.Ipgeo_parser do
                 0 ->
                     ip_shift = 0
                 _ ->
-                    ip_shift = Import.Utils.Math.ceiling(:math.log(broadcast - net) / :math.log(2))
+                    ip_shift = Import.Utils.Math.ceiling(Math.log(broadcast - net) / Math.log(2))
             end
 
 		
 
             ip_mask  = (32 - ip_shift)
-            ip_net   = :erlang.bsl( :erlang.bsr( net, ip_shift ), ip_shift )
+            ip_net   = Erl.bsl( Erl.bsr( net, ip_shift ), ip_shift )
 
             ip  = HashDict.new(from: net, to: broadcast, mask: ip_mask, shift: ip_shift, next: broadcast + 1, prev: net - 1)
             iso = HashDict.new(iso2: c, name: d)
