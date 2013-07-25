@@ -5,11 +5,12 @@ defmodule Import.Riak do
     alias :riakc_pb_socket, as: Socket
     alias :riakc_obj, as: Doc
     alias :erlang, as: Erl
+    alias Import.Utils.HashDict, as: HDict
 
     def link(options) do
         {host, port} = options
-        bind( :host, binary_to_atom(host) )
-            |> push( :port, binary_to_integer(port) )
+        HDict.bind( :host, binary_to_atom(host) )
+            |> HDict.push( :port, binary_to_integer(port) )
             |> linkstart([
                     {:"connect_timeout",1000000},
                     {:"queue_if_disconnected",true},
@@ -19,7 +20,7 @@ defmodule Import.Riak do
     end
 
     defp linkstart(opts, sopts) do
-        case Socket.start_link( get(opts,:host), get(opts,:port), sopts ) do
+        case Socket.start_link( HDict.get(opts,:host), HDict.get(opts,:port), sopts ) do
             {:ok, link_pid} ->
                 {:ok, link_pid}
             {_, reason } ->
@@ -43,10 +44,10 @@ defmodule Import.Riak do
         _old_priority = Erl.process_flag(:priority,:low)
         receive do
             {sender, hash_dict} ->
-                nro = Doc.new( "#{get( hash_dict, :bucket)}", "#{get( hash_dict, :net)}", get( hash_dict, :json ) )
+                nro = Doc.new( "#{ HDict.get( hash_dict, :bucket) }", "#{ HDict.get( hash_dict, :key) }", HDict.get( hash_dict, :json ) )
                 nro
                 |> Doc.get_update_metadata
-                |> Doc.set_secondary_index(  get( hash_dict, :six ) )
+                |> Doc.set_secondary_index(  HDict.get( hash_dict, :six ) )
                 |> update_metadata( nro )
                 |> respond( sender, hash_dict )
         end
@@ -56,31 +57,12 @@ defmodule Import.Riak do
         Doc.update_metadata(nro, md)
     end
 
-    defp make_key(k) when is_binary(k), do: binary_to_atom(k)
-    defp make_key(k) when is_atom(k), do: k
-
-    defp bind(k,v) do
-        HashDict.new([{make_key(k),v}])
-    end
-
-    defp get(d,k) do
-        HashDict.get(d,k,:none)
-    end
-    
-    defp set(d,k,v) do
-        HashDict.put(d,k,v)
-    end
-    
-    defp push(d,k,v) do
-        HashDict.put_new(d,k,v)
-    end
-
     defp respond(nro,sender,d) do
-        case Socket.put( get(d, :pid), nro, :infinity) do
+        case Socket.put( HDict.get(d, :pid), nro, :infinity) do
             :ok ->
-                sender <- { :ok, "#{ get( d, :bucket ) }/#{ get( d, :key) }" }
+                sender <- { :ok, "#{ HDict.get( d, :bucket ) }/#{ HDict.get( d, :key) }" }
             _ ->
-                sender <- { :error, "*#{ get( d, :bucket ) }/#{ get( d, :key ) }" }
+                sender <- { :error, "*#{ HDict.get( d, :bucket ) }/#{ HDict.get( d, :key ) }" }
         end
     end
 
