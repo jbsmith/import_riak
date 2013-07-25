@@ -97,6 +97,6 @@ defmodule Import.Riak.Csv.Ipgeo_parser do
                 { {:binary_index,  "post"},       [pc] }
             ]
 
-            {:ok, pid, bucket, net, json, six}
+            HashDict.new([{:stat,:ok}, {:pid, pid}, {:bucket, bucket}, {:net, net}, {:json, json}, {:six, six}])
         end
 end
